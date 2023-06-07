@@ -6,7 +6,8 @@ import string
 from getpass import getpass
 
 # Prompt user for APIC URL and credentials
-username = 'admin'
+apic_url = input("Enter APIC URL: ")
+username = input("Enter local admin username: ")
 password = getpass("Enter local admin password: ")
 
 # Prompt user for password requirements
@@ -45,8 +46,13 @@ with open(csv_file, 'r') as file:
             token = response.json()["imdata"][0]["aaaLogin"]["attributes"]["token"]
             print(f"\nLogin successful for APIC at {apic_ip}. Obtained token.")
 
+            headers = {
+                "Cookie": f"APIC-cookie={token}",
+                "Content-Type": "application/json"
+            }
+
             # Second API call to change password
-            change_password_url = f"https://{apic_ip}/api/changeSelfPassword.json?{token}"
+            change_password_url = f"https://{apic_ip}/api/changeSelfPassword.json"
             change_password_data = {
                 "aaaChangePassword": {
                     "attributes": {
@@ -57,7 +63,7 @@ with open(csv_file, 'r') as file:
                 }
             }
 
-            response = requests.post(change_password_url, json=change_password_data, verify=False)
+            response = requests.post(change_password_url, headers=headers, json=change_password_data, verify=False)
 
             if response.ok:
                 print(f"Password change successful for APIC at {apic_ip}.")
@@ -73,7 +79,7 @@ with open(csv_file, 'r') as file:
                     }
                 }
 
-                response = requests.post(test_login_url, json=test_login_data, verify=False)
+                response = requests.post(test_login_url, headers=headers, json=test_login_data, verify=False)
 
                 if response.ok:
                     password_changes.append((row['APIC_NAME'], True))
