@@ -31,6 +31,9 @@ with open(csv_file, 'r') as file:
 
         # First API call to obtain a token
         login_url = f"https://{apic_ip}/api/aaaLogin.json"
+        headers = {
+            "Content-Type": "application/json"
+        }
         login_data = {
             "aaaUser": {
                 "attributes": {
@@ -40,7 +43,7 @@ with open(csv_file, 'r') as file:
             }
         }
 
-        response = requests.post(login_url, json=login_data, verify=False)
+        response = requests.post(login_url, headers=headers, json=login_data, verify=False)
 
         if response.ok:
             token = response.json()["imdata"][0]["aaaLogin"]["attributes"]["token"]
@@ -70,6 +73,9 @@ with open(csv_file, 'r') as file:
 
                 # Test login with the new password
                 test_login_url = f"https://{apic_ip}/api/aaaLogin.json"
+                headers = {
+                    "Content-Type": "application/json"
+                }
                 test_login_data = {
                     "aaaUser": {
                         "attributes": {
