@@ -7,7 +7,7 @@ from getpass import getpass
 
 # Prompt user for APIC URL and credentials
 apic_url = input("Enter APIC URL: ")
-username = input("Enter local admin username: ")
+username = "admin"
 password = getpass("Enter local admin password: ")
 
 # Prompt user for password requirements
